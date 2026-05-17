@@ -1,0 +1,10 @@
+{% extends "admin/change_list.html" %}
+
+{% block object-tools-items %}
+    <li>
+        <a href="/admin-draw/" class="addlink" style="background-color: #28a745 !important; color: white !important; font-weight: bold; margin-right: 10px;">
+            🎉 새 회차 랜덤 추첨 실행
+        </a>
+    </li>
+    {{ block.super }}
+{% endblock %}

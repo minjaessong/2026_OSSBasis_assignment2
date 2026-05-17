@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>도커 로또 서비스</title>
+</head>
+<body>
+    <h1>행운의 로또 6/45</h1>
+    
+    {% if user.is_authenticated %}
+        <p><strong>{{ user.username }}</strong>님 환영합니다!</p>
+        
+        <form action="{% url 'logout' %}" method="post">
+            {% csrf_token %}
+            <button type="submit">로그아웃</button>
+        </form>
+
+        <hr>
+        <h3>로또 구매하기 현재 {{ current_round }}회차 판매 중</h3>
+
+        <form method="POST">
+            {% csrf_token %}
+            <input type="hidden" name="action_type" value="auto">
+            <button type="submit">자동 구매</button>
+        </form>
+
+        {% if messages %}
+            <ul style="color: red;">
+            {% for message in messages %}
+                <li>{{ message }}</li>
+            {% endfor %}
+            </ul>
+        {% endif %}
+
+        <form method="POST" style="margin-bottom: 20px;">
+            {% csrf_token %}
+            <input type="hidden" name="action_type" value="manual">
+            <label>수동 입력: </label>
+            <input type="number" name="n1" min="1" max="45" required style="width: 40px;">
+            <input type="number" name="n2" min="1" max="45" required style="width: 40px;">
+            <input type="number" name="n3" min="1" max="45" required style="width: 40px;">
+            <input type="number" name="n4" min="1" max="45" required style="width: 40px;">
+            <input type="number" name="n5" min="1" max="45" required style="width: 40px;">
+            <input type="number" name="n6" min="1" max="45" required style="width: 40px;">
+            <button type="submit" style="background-color: lightblue;">수동 구매</button>
+        </form>
+
+        <hr>
+        <h2>내가 구매한 복권 내역</h2>
+        <ul>
+            {% for ticket in tickets %}
+                <li>
+                    [{{ ticket.draw_round }}회차] 번호: {{ ticket.numbers }} 
+                    | 종류: {% if ticket.is_automatic %}자동{% else %}수동{% endif %} 
+                    | 결과: <strong>{{ ticket.result_text }}</strong>
+                </li>
+            {% empty %}
+                <li>구매한 복권이 없습니다.</li>
+            {% endfor %}
+        </ul>
+
+    {% else %}
+        <p>로그인이 필요합니다.</p>
+        <div style="margin-top: 20px;">
+            <a href="{% url 'login' %}" style="padding: 10px; background: #007bff; color: white; text-decoration: none; border-radius: 5px;">로그인</a>
+            <a href="{% url 'signup' %}" style="padding: 10px; background: #28a745; color: white; text-decoration: none; border-radius: 5px;">회원가입</a>
+        </div>
+    {% endif %}
+</body>
+</html>
